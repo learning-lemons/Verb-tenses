@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Uncle Lemon Past Tense Challenge</title>
+<style>
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: "Trebuchet MS", Arial, sans-serif;
+    background: #fff8d8;
+    color: #2f3b2f;
+  }
+  .wrap {
+    max-width: 980px;
+    margin: 0 auto;
+    padding: 24px;
+  }
+  .header {
+    background: #fff3a8;
+    border: 4px solid #f2cf3a;
+    border-radius: 28px;
+    padding: 20px 24px;
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    box-shadow: 0 8px 0 #e2bf31;
+  }
+  .lemon {
+    width: 110px;
+    height: 90px;
+    background: #ffd84d;
+    border: 5px solid #d6a900;
+    border-radius: 55% 45% 52% 48%;
+    position: relative;
+    flex: 0 0 auto;
+  }
+  .leaf {
+    position: absolute;
+    width: 34px;
+    height: 18px;
+    background: #76b947;
+    border-radius: 50% 10% 50% 10%;
+    top: -12px;
+    left: 55px;
+    transform: rotate(-20deg);
+    border: 3px solid #4d8f2f;
+  }
+  .eye {
+    position: absolute;
+    width: 9px;
+    height: 9px;
+    background: #263226;
+    border-radius: 50%;
+    top: 34px;
+  }
+  .eye.left { left: 30px; }
+  .eye.right { right: 30px; }
+  .smile {
+    position: absolute;
+    width: 40px;
+    height: 18px;
+    border-bottom: 4px solid #263226;
+    border-radius: 0 0 50% 50%;
+    left: 30px;
+    top: 48px;
+  }
+  h1 { margin: 0; font-size: 34px; color: #466b2e; }
+  .subtitle { margin-top: 5px; font-size: 18px; }
+  .panel {
+    margin-top: 26px;
+    background: white;
+    border: 4px solid #b8d98a;
+    border-radius: 28px;
+    padding: 24px;
+    box-shadow: 0 8px 0 #9bc46e;
+  }
+  .topline {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    font-weight: 700;
+    color: #60745a;
+    font-size: 18px;
+  }
+  .verb {
+    text-align: center;
+    font-size: 58px;
+    font-weight: 900;
+    color: #355e2f;
+    margin: 32px 0 22px;
+  }
+  .question {
+    text-align: center;
+    font-size: 24px;
+    margin-bottom: 18px;
+    font-weight: 700;
+  }
+  .choices {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 18px;
+  }
+  button {
+    font-family: inherit;
+    cursor: pointer;
+  }
+  .choice {
+    min-height: 82px;
+    font-size: 28px;
+    font-weight: 800;
+    border: 4px solid #f0c842;
+    border-radius: 20px;
+    background: #fff8cf;
+    color: #384838;
+  }
+  .choice:hover { background: #fff1a3; }
+  .choice:disabled { cursor: default; opacity: .92; }
+  .correct { background: #dff3c4 !important; border-color: #77b63f !important; }
+  .wrong { background: #ffd8d8 !important; border-color: #d46c6c !important; }
+  .feedback {
+    min-height: 42px;
+    text-align: center;
+    font-size: 24px;
+    font-weight: 800;
+    margin-top: 20px;
+  }
+  .next, .primary, .secondary {
+    display: block;
+    margin: 18px auto 0;
+    border: none;
+    border-radius: 18px;
+    padding: 14px 28px;
+    font-size: 21px;
+    font-weight: 900;
+  }
+  .next, .primary {
+    background: #78b947;
+    color: white;
+    box-shadow: 0 5px 0 #4f8a2a;
+  }
+  .secondary {
+    background: #f0c842;
+    color: #3b452e;
+    box-shadow: 0 5px 0 #d4aa22;
+  }
+  .hidden { display: none; }
+  .center { text-align: center; }
+  .bigscore { font-size: 42px; font-weight: 900; color: #466b2e; }
+  .sentence-grid {
+    display: grid;
+    gap: 18px;
+    margin-top: 20px;
+  }
+  label { font-size: 20px; font-weight: 800; }
+  select, textarea {
+    width: 100%;
+    border: 3px solid #b8d98a;
+    border-radius: 14px;
+    padding: 12px 14px;
+    font-size: 20px;
+    font-family: inherit;
+    background: #fffef8;
+  }
+  textarea { min-height: 90px; resize: vertical; }
+  .example {
+    background: #fff7c7;
+    border: 3px dashed #e5be32;
+    border-radius: 18px;
+    padding: 18px;
+    font-size: 20px;
+    line-height: 1.55;
+  }
+  .footer {
+    text-align: center;
+    padding: 24px 0 8px;
+    color: #6e7f61;
+    font-weight: 700;
+  }
+  .badge {
+    display: inline-block;
+    background: #f0c842;
+    border-radius: 999px;
+    padding: 6px 12px;
+    color: #3d4d33;
+    margin-bottom: 8px;
+    font-size: 15px;
+    font-weight: 900;
+  }
+  @media (max-width: 700px) {
+    .wrap { padding: 14px; }
+    .header { align-items: flex-start; }
+    .lemon { width: 86px; height: 70px; }
+    .eye { top: 26px; }
+    .eye.left { left: 23px; }
+    .eye.right { right: 23px; }
+    .smile { left: 23px; top: 39px; width: 32px; }
+    h1 { font-size: 26px; }
+    .choices { grid-template-columns: 1fr; }
+    .verb { font-size: 46px; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="header">
+    <div class="lemon" aria-hidden="true">
+      <div class="leaf"></div><div class="eye left"></div><div class="eye right"></div><div class="smile"></div>
+    </div>
+    <div>
+      <div class="badge">UNCLE LEMON GAME</div>
+      <h1>Past Tense Challenge 🍋</h1>
+      <div class="subtitle">Choose the correct past tense word, then make your own sentences!</div>
+    </div>
+  </div>
+
+  <section id="quizPanel" class="panel">
+    <div class="topline">
+      <div id="roundText">Question 1 of 16</div>
+      <div id="scoreText">Score: 0 / 16</div>
+    </div>
+    <div class="question">What is the past tense of:</div>
+    <div id="verbText" class="verb">take</div>
+    <div id="choices" class="choices"></div>
+    <div id="feedback" class="feedback" aria-live="polite"></div>
+    <button id="nextBtn" class="next hidden" type="button">Next Question ➜</button>
+  </section>
+
+  <section id="finishPanel" class="panel hidden center">
+    <div style="font-size:64px">🏆🍋</div>
+    <h2>Fantastic work!</h2>
+    <div id="finalScore" class="bigscore"></div>
+    <p style="font-size:20px">Now choose one verb and make two sentences.</p>
+    <button id="sentenceBtn" class="primary" type="button">Sentence Challenge ➜</button>
+  </section>
+
+  <section id="sentencePanel" class="panel hidden">
+    <div class="badge">BONUS ROUND</div>
+    <h2>Make Your Own Sentences ✏️</h2>
+    <p style="font-size:19px">Choose a verb from the game. Write one sentence in the present tense and one in the past tense.</p>
+
+    <div class="sentence-grid">
+      <div>
+        <label for="verbSelect">Select a verb</label>
+        <select id="verbSelect"></select>
+      </div>
+
+      <div id="exampleBox" class="example"></div>
+
+      <div>
+        <label for="presentSentence">Present tense sentence</label>
+        <textarea id="presentSentence" placeholder="Example: I go to school."></textarea>
+      </div>
+
+      <div>
+        <label for="pastSentence">Past tense sentence</label>
+        <textarea id="pastSentence" placeholder="Example: I went to school."></textarea>
+      </div>
+    </div>
+
+    <button id="doneBtn" class="primary" type="button">I Did It! ⭐</button>
+    <div id="sentenceFeedback" class="feedback"></div>
+    <button id="restartBtn" class="secondary" type="button">Play Again ↻</button>
+  </section>
+
+  <div class="footer">Uncle Lemon English • Learn • Speak • Play 🍋</div>
+</div>
+
+<script>
+const data = [
+  {v:"take", a:"taked", b:"took", correct:"took"},
+  {v:"make", a:"made", b:"maked", correct:"made"},
+  {v:"sleep", a:"sleeped", b:"slept", correct:"slept"},
+  {v:"go", a:"goed", b:"went", correct:"went"},
+  {v:"come", a:"came", b:"comed", correct:"came"},
+  {v:"see", a:"seed", b:"saw", correct:"saw"},
+  {v:"eat", a:"eated", b:"ate", correct:"ate"},
+  {v:"get", a:"getted", b:"got", correct:"got"},
+  {v:"give", a:"gave", b:"gived", correct:"gave"},
+  {v:"say", a:"sayed", b:"said", correct:"said"},
+  {v:"have", a:"had", b:"haved", correct:"had"},
+  {v:"play", a:"played", b:"plaid", correct:"played"},
+  {v:"walk", a:"walkt", b:"walked", correct:"walked"},
+  {v:"look", a:"looked", b:"lookt", correct:"looked"},
+  {v:"find", a:"finded", b:"found", correct:"found"},
+  {v:"fly", a:"flyed", b:"flew", correct:"flew"}
+];
+
+let index = 0;
+let score = 0;
+let answered = false;
+
+const quizPanel = document.getElementById("quizPanel");
+const finishPanel = document.getElementById("finishPanel");
+const sentencePanel = document.getElementById("sentencePanel");
+const roundText = document.getElementById("roundText");
+const scoreText = document.getElementById("scoreText");
+const verbText = document.getElementById("verbText");
+const choices = document.getElementById("choices");
+const feedback = document.getElementById("feedback");
+const nextBtn = document.getElementById("nextBtn");
+const finalScore = document.getElementById("finalScore");
+
+function renderQuestion() {
+  answered = false;
+  nextBtn.classList.add("hidden");
+  feedback.textContent = "";
+  choices.innerHTML = "";
+
+  const q = data[index];
+  roundText.textContent = `Question ${index + 1} of ${data.length}`;
+  scoreText.textContent = `Score: ${score} / ${data.length}`;
+  verbText.textContent = q.v;
+
+  [["A", q.a], ["B", q.b]].forEach(([label, text]) => {
+    const btn = document.createElement("button");
+    btn.type = "button";
+    btn.className = "choice";
+    btn.textContent = `${label}) ${text}`;
+    btn.addEventListener("click", () => chooseAnswer(text, btn));
+    choices.appendChild(btn);
+  });
+}
+
+function chooseAnswer(answer, clickedBtn) {
+  if (answered) return;
+  answered = true;
+
+  const q = data[index];
+  const buttons = [...choices.querySelectorAll("button")];
+
+  buttons.forEach(btn => {
+    btn.disabled = true;
+    const answerText = btn.textContent.slice(3).trim();
+    if (answerText === q.correct) btn.classList.add("correct");
+  });
+
+  if (answer === q.correct) {
+    score++;
+    clickedBtn.classList.add("correct");
+    feedback.textContent = "⭐ Correct! Great job!";
+  } else {
+    clickedBtn.classList.add("wrong");
+    feedback.textContent = `🍋 Nice try! The correct answer is "${q.correct}".`;
+  }
+
+  scoreText.textContent = `Score: ${score} / ${data.length}`;
+  nextBtn.classList.remove("hidden");
+}
+
+nextBtn.addEventListener("click", () => {
+  index++;
+  if (index < data.length) {
+    renderQuestion();
+  } else {
+    quizPanel.classList.add("hidden");
+    finishPanel.classList.remove("hidden");
+    finalScore.textContent = `${score} / ${data.length}`;
+  }
+});
+
+const verbSelect = document.getElementById("verbSelect");
+data.forEach(item => {
+  const option = document.createElement("option");
+  option.value = item.v;
+  option.textContent = `${item.v} → ${item.correct}`;
+  verbSelect.appendChild(option);
+});
+
+function updateExample() {
+  const selected = data.find(x => x.v === verbSelect.value);
+  if (selected.v === "go") {
+    document.getElementById("exampleBox").innerHTML =
+      "<strong>Example:</strong><br>Present tense: I <strong>go</strong> to school.<br>Past tense: I <strong>went</strong> to school.";
+  } else {
+    document.getElementById("exampleBox").innerHTML =
+      `<strong>Your verb:</strong> ${selected.v} → ${selected.correct}<br>Now make one present-tense sentence and one past-tense sentence.`;
+  }
+}
+
+verbSelect.addEventListener("change", updateExample);
+
+document.getElementById("sentenceBtn").addEventListener("click", () => {
+  finishPanel.classList.add("hidden");
+  sentencePanel.classList.remove("hidden");
+  updateExample();
+});
+
+document.getElementById("doneBtn").addEventListener("click", () => {
+  const present = document.getElementById("presentSentence").value.trim();
+  const past = document.getElementById("pastSentence").value.trim();
+  const out = document.getElementById("sentenceFeedback");
+
+  if (!present || !past) {
+    out.textContent = "🍋 Write both sentences first!";
+  } else {
+    out.textContent = "🌟 Fantastic! Now read both sentences out loud to Uncle Lemon!";
+  }
+});
+
+document.getElementById("restartBtn").addEventListener("click", () => {
+  index = 0;
+  score = 0;
+  document.getElementById("presentSentence").value = "";
+  document.getElementById("pastSentence").value = "";
+  document.getElementById("sentenceFeedback").textContent = "";
+  sentencePanel.classList.add("hidden");
+  quizPanel.classList.remove("hidden");
+  renderQuestion();
+});
+
+renderQuestion();
+</script>
+</body>
+</html>
